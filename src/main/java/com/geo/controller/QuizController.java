@@ -17,10 +17,22 @@ public class QuizController {
 
   private final QuizService quizService;
 
+  @GetMapping("/insertNickname")
+  public String getNicknamePage(){
+    return "nicknamePage";
+  }
+
+  @PostMapping("/insertNickname")
+  public String getNickname(@RequestParam ("nickname") String nickname, Model model){
+    model.addAttribute("nickname", nickname);
+    return "redirect:/quiz?nickname=" + nickname;
+  }
+
   @GetMapping()
-  public String getQuizPage(Model model) {
+  public String getQuizPage(@RequestParam(value = "nickname", required = false) String nickname, Model model) {
     QuizData quizData = quizService.getQuizData();
 
+    model.addAttribute("nickname", nickname);
     model.addAttribute("quiz", quizData.getCountryName());
     model.addAttribute("options", quizData.getCountryCapitalOptions());
     model.addAttribute("correctAnswer", quizData.getCorrectAnswer());
@@ -31,11 +43,14 @@ public class QuizController {
   }
 
     @PostMapping
-    public String processQuizAnswer(@RequestParam("selectedCapital") String selectedCapital,
+    public String processQuizAnswer(@RequestParam(value = "nickname", required = false) String nickname,
+                                    @RequestParam("selectedCapital") String selectedCapital,
                                     @RequestParam("correctAnswer") String correctAnswer,
                                     @RequestParam("currentQuestion") int currentQuestion,
                                     @RequestParam("score") int score,
                                     Model model) {
-        return quizService.evaluateAnswer(selectedCapital, correctAnswer, currentQuestion, score, model);
+
+        model.addAttribute("nickname", nickname);
+        return quizService.evaluateAnswer(selectedCapital, correctAnswer, currentQuestion, score, nickname, model);
     }
 }

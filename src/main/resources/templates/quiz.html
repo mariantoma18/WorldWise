@@ -117,6 +117,8 @@
                 <button id="finishQuizButton" type="submit" onclick="/quizFinalScore" style="background-color: #F5D042; color: #02343F; border-radius: 9999px; padding: 10px 20px;" th:if="${currentQuestion == totalQuestions}">
                     <i class="bi bi-send"></i> Finish Quiz
                 </button>
+
+                <input type="hidden" name="nickname" th:value="${nickname}" />
             </form>
         </div>
     </div>

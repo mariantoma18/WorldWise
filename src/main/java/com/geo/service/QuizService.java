@@ -1,6 +1,7 @@
 package com.geo.service;
 
 import com.geo.model.Country;
+import com.geo.model.Leaderboard;
 import com.geo.model.QuizData;
 import java.util.*;
 import lombok.Getter;
@@ -13,10 +14,10 @@ import org.springframework.web.client.RestTemplate;
 public class QuizService {
 
   Random random = new Random();
-  @Getter
-  private final int TOTAL_QUESTIONS = 10;
-  @Getter
-  private final int POINTS_FOR_CORRECT_ANSWER = 100;
+  @Getter private final int TOTAL_QUESTIONS = 10;
+  @Getter private final int POINTS_FOR_CORRECT_ANSWER = 100;
+
+  private List<Leaderboard> leaderboardList = new ArrayList<>();
 
   private final String QUIZ_API_URL = "https://restcountries.com/v3.1/all?fields=name,capital";
 
@@ -75,19 +76,22 @@ public class QuizService {
     return userAnswer != null && userAnswer.equals(correctAnswer);
   }
 
-  public String evaluateAnswer(String selectedCapital, String correctAnswer, int currentQuestion, int score, Model model) {
+  public String evaluateAnswer(
+      String selectedCapital, String correctAnswer, int currentQuestion, int score, String nickname, Model model) {
 
     boolean isCorrect = checkAnswer(selectedCapital, correctAnswer);
 
     score = verifyAnswer(score, model, isCorrect);
 
-    return handleQuizProgress(currentQuestion, score, model);
+    return handleQuizProgress(currentQuestion, score, nickname, model);
   }
 
-  public String handleQuizProgress(int currentQuestion, int score, Model model) {
-    if(currentQuestion == TOTAL_QUESTIONS) {
+  public String handleQuizProgress(int currentQuestion, int score, String nickname, Model model) {
+    if (currentQuestion == TOTAL_QUESTIONS) {
 
+      addLeaderboardScore(nickname,score);
       model.addAttribute("finalScore", score);
+      model.addAttribute("leaderboard",getTop10LeaderboardList());
       return "quizFinalScore";
     } else {
       currentQuestion++;
@@ -99,6 +103,7 @@ public class QuizService {
       model.addAttribute("currentQuestion", currentQuestion);
       model.addAttribute("score", score);
       model.addAttribute("totalQuestions", TOTAL_QUESTIONS);
+      model.addAttribute("nickname", nickname);
       return "quiz";
     }
   }
@@ -112,4 +117,18 @@ public class QuizService {
     }
     return score;
   }
+
+  public void addLeaderboardScore(String nickname, int score) {
+    Leaderboard attempt = new Leaderboard(nickname, score);
+    leaderboardList.add(attempt);
+  }
+
+  public List<Leaderboard> getTop10LeaderboardList() {
+    return leaderboardList.stream()
+            .sorted(Comparator.comparingInt(Leaderboard::getScore).reversed())
+            .limit(10)
+            .toList();
+  }
+
+
 }

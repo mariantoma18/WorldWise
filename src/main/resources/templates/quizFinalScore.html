@@ -63,6 +63,23 @@
         left: 0;
         display: block;
     }
+
+    ul {
+            color: #F0EDCC;
+            list-style-type: disc;
+            padding-left: 20px;
+            text-align: center;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        li {
+            margin: 5px 0;
+            font-size: 1em;
+        }
+
   </style>
 </head>
 
@@ -85,14 +102,26 @@
   <p class="w3-xxxlarge">Quiz</p>
 </div>
 
-<div th:if="${finalScore}" class="final-score-container w3-animate-zoom">
-  <h2>Quiz completed!<br> Your final score is: <span th:text="${finalScore}"></span>/1000p &#127919</h2>
+<div class = "split-cointainer">
 
-  <form action="/quiz" method="get">
-    <button type="submit" style="background-color: #F5D042; color: #02343F; border-radius: 9999px; padding: 10px 20px;">
-      <i class="bi bi-arrow-repeat"></i> New Quiz
-    </button>
-  </form>
+  <div th:if="${finalScore}" class="final-score-container w3-animate-zoom">
+    <h2>Quiz completed!<br> Your final score is: <span th:text="${finalScore}"></span>/1000p &#127919</h2>
+
+    <form action="/quiz/insertNickname" method="get">
+      <button type="submit" style="background-color: #F5D042; color: #02343F; border-radius: 9999px; padding: 10px 20px;">
+        <i class="bi bi-arrow-repeat"></i> New Quiz
+      </button>
+    </form>
+  </div>
+
+  <div class="leaderboard final-score-container">
+    <h3>Top 10 Leaderboard &#127942</h3>
+    <ul>
+      <li th:each="entry : ${leaderboard}">
+        <span th:text="${entry.nickname}"></span> - <span th:text="${entry.score}"></span>
+      </li>
+    </ul>
+  </div>
 </div>
 
 <script>
