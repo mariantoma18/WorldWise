@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta+Stencil">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+
+
+  <style>
+    .w3-allerta {
+      font-family: "Allerta Stencil";
+    }
+
+    .final-score-container {
+        background-color: #02343F;
+        color: #F0EDCC;
+        border: 2px solid black;
+        padding: 15px;
+        box-shadow: 5px 10px;
+        margin: 10px 0;
+        border-radius: 15px;
+        width: 500px;
+        text-align: center;
+    }
+
+    .w3-sidebar {
+        width: 250px;
+        position: fixed;
+        height: 100%;
+        background-color: #111;
+        overflow-x: hidden;
+        padding-top: 60px;
+        transition: 0.5s;
+        display: none;
+    }
+
+    .w3-bar-item {
+        padding: 10px 15px;
+        text-align: center;
+        color: white;
+        font-size: 20px;
+    }
+
+    .w3-bar-item:hover {
+        background-color: #ddd;
+        color: black;
+    }
+
+    .w3-button.w3-teal {
+        height: 40px;
+        width: 80px;
+        padding: 0;
+        font-size: 24px;
+    }
+
+    #mySidebar.open {
+        left: 0;
+        display: block;
+    }
+
+    ul {
+            color: #F0EDCC;
+            list-style-type: disc;
+            padding-left: 20px;
+            text-align: center;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        li {
+            margin: 5px 0;
+            font-size: 1em;
+        }
+
+  </style>
+</head>
+
+<body style="background-color:#dadada ;display: flex; flex-direction: column; align-items: center;">
+
+<div class="w3-sidebar w3-bar-block w3-border-right" id="mySidebar">
+  <a href="/" class="w3-bar-item w3-button"><i class="bi bi-house-fill"></i> Home</a>
+  <a href="/info" class="w3-bar-item w3-button"><i class="bi bi-book-half"></i> Info</a>
+  <button onclick="w3_close()" class="w3-bar-item w3-large" style="background-color: #02343F; color: #F0EDCC;">Close
+    &times;
+  </button>
+</div>
+
+<div class="w3-container w3-center w3-allerta w3-animate-zoom"
+     style="background-color: #02343F; color: #F0EDCC; width: 100%;">
+  <div>
+    <button class="w3-button w3-teal w3-large w3-left" onclick="w3_open()">☰ Menu</button>
+    <div class="w3-container"><h1></h1></div>
+  </div>
+  <p class="w3-xxxlarge">Quiz</p>
+</div>
+
+<div class = "split-cointainer">
+
+  <div th:if="${finalScore}" class="final-score-container w3-animate-zoom">
+    <h2>Quiz completed!<br> Your final score is: <span th:text="${finalScore}"></span>/1000p &#127919</h2>
+
+    <form action="/quiz/insertNickname" method="get">
+      <button type="submit" style="background-color: #F5D042; color: #02343F; border-radius: 9999px; padding: 10px 20px;">
+        <i class="bi bi-arrow-repeat"></i> New Quiz
+      </button>
+    </form>
+  </div>
+
+  <div class="leaderboard final-score-container">
+    <h3>Top 10 Leaderboard &#127942</h3>
+    <ul>
+      <li th:each="entry : ${leaderboard}">
+        <span th:text="${entry.nickname}"></span> - <span th:text="${entry.score}"></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  function w3_open() {
+      var sidebar = document.getElementById("mySidebar");
+      sidebar.style.display = "block";
+      sidebar.classList.add("open");
+  }
+
+  function w3_close() {
+      var sidebar = document.getElementById("mySidebar");
+      sidebar.style.display = "none";
+      sidebar.classList.remove("open");
+  }
+
+  function enableSubmit() {
+      const submitButton = document.getElementById("submitButton");
+      submitButton.disabled = false;
+  }
+
+</script>
+
+</body>
+</html>
